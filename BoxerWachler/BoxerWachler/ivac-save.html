@@ -1,0 +1,249 @@
+<HTML>
+    <HEAD>
+        <TITLE>INTERACTIVE VISUAL ACUITY CHART</TITLE>
+        <SCRIPT>
+            
+            var currentRow = 10;
+            
+            var size = 0;
+            var distance = 0;
+            var tempsize = 0;
+            var tempdistance = 0;
+            
+            function clsChart() {
+                this.scale = 0
+                //this.size = 0;
+                //this.distance = 0;
+                this.chartType = 1; // 1 = Snellen, 2 = HOTV, 3 = Alan
+                this.displayType = 1; // 1 = Row, 2 = Single
+                
+                this.rowScale = new Array(800,600,400,200,100,80,60,40,30,25,20,15);
+                this.rowElements = new Array(1,1,1,1,2,3,4,4,5,5,5,5);
+                this.numRows = this.rowScale.length;
+                
+                this.currentChart;
+                
+                this.Snellen = new Array("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","r","s","t","u","v","w","x","y","z");
+                this.HOTV = new Array ("h","o","t","v");
+                this.Alan = new Array("bear","cake","car","duck","hand","house","horse","telephone","tree");
+                this.ChartPath = new Array ("","","");
+                
+                this.Form_Get = clsChart_Form_Get;
+                this.Row_Draw = clsChart_Row_Draw;
+                this.Single_Draw = clsChart_Single_Draw;
+                this.Rnd_Image = clsChart_Rnd_Image;
+                this.Too_Small = clsChart_Too_Small;
+            }
+        function initializeScreen() {
+            distance = 10;
+            size = 1;
+            generateDocument(1);
+        }
+        function passSize(mysize) {
+            //document.getElementById('display').innerHTML = "size=" + mysize;
+            tempsize = mysize;
+            size = mysize
+        }
+        function passDistance(mydistance) {
+            //document.getElementById('display').innerHTML = "size=" + mydistance;
+            tempdistance = mydistance;
+            distance = mydistance
+        }
+        function clsChart_Form_Get() {
+            
+            //this.size = document.frmInput.txtSize.value;
+            
+            //if (!Validate(size)) {
+            //size=1;
+            // document.frmInput.txtSize.value=1;
+            // }
+            // document.frmInput.txtSize.value = size
+            //this.distance = document.frmInput.txtDistance.value;
+            
+            
+            //this.distance = document.frmInput.txtDistance.value;
+            
+            
+            //if (!Validate(distance)) {
+            // distance=20;
+            //   document.frmInput.txtDistance.value=20;
+            // }
+            // document.frmInput.txtDistance.value= distance
+            this.scale = (distance/20)*(1/size)*35.4; // the last number is the number of pixels that = 20/20 ASSUMING line is 1 inch, dist is 20 feet
+            
+            
+            this.currentChart = this.Snellen;
+            
+        }
+        
+        function clsChart_Row_Draw () {
+            var strImages;
+            strImages = "<TABLE WIDTH=620 BORDER=0 CELLPADDING=0 CELLSPACING=0>";
+            strImages += "<TR ALIGN='CENTER'><TD>";
+            
+            var dimension = Round(this.scale*this.rowScale[currentRow]/20);
+            
+            if (dimension < 15) {
+                strImages = this.Too_Small()
+                return strImages;
+            }
+            
+            var ImageArray = new Array (this.rowElements[currentRow]);
+            
+            for (var j=0; j < this.rowElements[currentRow] && j < this.currentChart.length; j++) {
+                var tempValid = false;
+                ImageArray[j] = this.Rnd_Image();
+                
+                while (!tempValid) {
+                    tempValid = true;
+                    
+                    for (var k=j-1; k >= 0; k--) {
+                        
+                        if (ImageArray[j] == ImageArray[k]) {
+                            ImageArray[j] = this.Rnd_Image();
+                            tempValid = false;
+                        }
+                    }
+                }
+                
+                strImages += imgWrite("" + this.ChartPath[this.chartType-1], ImageArray[j], dimension, dimension, 10, 10);
+            }
+            strImages += "</TD><TD ALIGN='RIGHT'>";
+            strImages += "20/" + this.rowScale[currentRow];
+            strImages += "</TD></TR>";
+            strImages += "</TABLE>";
+            //strImages += "tempsize=" + tempsize + "<br>";
+            //strImages += "tempdistance=" + tempdistance + "<br>";
+            strImages += "<br><br><b>20/" + this.rowScale[currentRow] + "</b>";
+            return strImages;
+        }
+        
+        
+        function clsChart_Single_Draw (){
+            var strImages;
+            strImages = "<TABLE WIDTH=620 BORDER=0 CELLPADDING=0 CELLSPACING=0>";
+            strImages += "<TR ALIGN='CENTER'><TD>";
+            var dimension = Round(this.scale*this.rowScale[currentRow]/20);
+            
+            if (dimension < 15) {
+                strImages = this.Too_Small()
+                return strImages;
+            }
+            
+            strImages += imgWrite("" + this.ChartPath[this.chartType-1], this.Rnd_Image(), dimension, dimension, 10, 10);
+            strImages += "</TD><TD ALIGN='RIGHT'>";
+            strImages += "20/" + this.rowScale[currentRow];
+            strImages += "</TD></TR>";
+            strImages += "</TABLE>";
+            
+            return strImages;
+            
+        }
+        
+        function generateDocument(action) {
+            var Chart = new clsChart();
+            Chart.Form_Get();
+            if (action == 2) {
+                currentRow--;
+                if (currentRow < 0) {
+                    currentRow = 0;
+                }
+            }
+            if (action == 3) {
+                currentRow++;
+                if (currentRow > Chart.numRows-1) {
+                    currentRow = Chart.numRows -1;
+                }
+            }
+            //displayDoc = parent.fraDisplay.document;
+            //displayDoc.writeln("<HTML>");
+            //displayDoc.writeln("<BODY BGCOLOR='white'>");
+            
+            //if (Chart.displayType == "1") {
+            //displayDoc.writeln(Chart.Row_Draw());
+            //}
+            //if (Chart.displayType == "2") {
+            //displayDoc.writeln(Chart.Single_Draw());
+            //}
+            //displayDoc.writeln("</BODY>");
+            //displayDoc.writeln("</HTML>");
+            //displayDoc.close();
+            var myHtml = Chart.Row_Draw();
+            document.getElementById('display').innerHTML = myHtml;
+        }
+        
+        function imgWrite(strInPath, strInName, intInWidth, intInHeight, intInHSpace, intInVSpace) {
+            return ("<IMG SRC='" + strInPath + strInName + ".gif' WIDTH=" + intInWidth + " HEIGHT=" + intInHeight + " HSPACE=" + intInHSpace + " VSPACE=" + intInVSpace + ">");
+        }
+        
+        function clsChart_Rnd_Image() {
+            return (this.currentChart[Rnd(0,this.currentChart.length - 1)]);
+        }
+        
+        function clsChart_Too_Small() {
+            var string = "<B>At 20/" + this.rowScale[currentRow] + ", the images are too small to read on this monitor, you can:</B><BR>";
+            string += "<B>1. Make the letters larger or </B><BR>";
+            string += "<B>2. Stand farther away from the screen (increase distance)</B><BR>";
+            return string
+        }
+        
+        
+        function Validate(variable) {
+            strNumber = "" + variable;
+            if (strNumber == "undefined" || strNumber == "") {
+                return false;
+            }
+            for (var i=0; i < strNumber.length; i++) {
+                if (strNumber.charAt(i) < "0" || strNumber.charAt(i) > "9") {
+                    if (strNumber.charAt(i) != ".") {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        
+        function Rnd(inlo,inhi) {
+            var lo = Math.floor (inlo);
+            var hi = Math.floor (inhi);
+            var today = new Date();
+            var bigbig = Math.random() * today.getTime() * today.getSeconds();
+            var rndnum = ((bigbig + lo + hi) % (hi - lo + 1) + lo);
+            var temp= Round(rndnum);
+            if (temp > hi) {temp = hi};
+            if (temp < lo) {temp = lo};
+            return (temp);
+        }
+        
+        function Round(inNumber) {
+            var strNumber = "" + inNumber;
+            if (strNumber == "undefined" || strNumber == "") {
+                return 0;
+            }
+            for (var i=0; i < strNumber.length; i++) {
+                if (strNumber.charAt(i) == ".") {
+                    return (strNumber.charAt(i+1) > 5 ? (1*strNumber.substring(0, i)) + 1 : 1*strNumber.substring(0,i));
+                }
+            }
+            return inNumber;
+        }
+        
+        
+        
+            </SCRIPT>
+        
+    </HEAD>
+    
+    <body onload="initializeScreen()">
+        <center>
+            <form name="frmInput" action="console.html" method="POST">
+                <b><I>Zoom Red Line with ruler to 1"</I></b><BR><br>
+                <IMG SRC="joomline.png" WIDTH=100 HEIGHT=15 BORDER=0> <br>
+                    </form>
+            <br><br>
+            <div id="display">
+                <h1>Vision Results</h1>
+            </div>
+        </center>
+    </body>
+</HTML>

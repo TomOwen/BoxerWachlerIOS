@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <style>
+input[type=text], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 25px;
+}
+h2 {
+        font-size: 30px;
+    }
+label {
+        font-size: 25px;
+    }
+    textarea {
+        font-size: 25px;
+    }
+input[type=text]:focus {
+    background-color: lightblue;
+    font-size: 25px;
+    }
+
+input[type=submit] {
+    width: 100%;
+    background-color: lightblue;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 25px;
+}
+
+input[type=submit]:hover {
+    background-color: #45a049;
+    font-size: 25px;
+}
+
+div {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+}
+</style>
+    <title>Contact Us</title>
+  </head>
+  <body>
+    <div>
+        <br>
+    <h2>
+        To schedule a consultation with Dr. Brian or for additional information, please
+        contact Boxer Wachler Vision Institute in Beverly Hills, CA via the following:
+        <br><br>
+        Directions: <a href="mapturn">Map and Turn By Turn Directions</a><br><br>
+        Phone: <a href="tel:+13105945209">(310) 594-5209</a><br><br>
+        Email: <a href="mailto:info@boxerwachler.com"> info@boxerwachler.com</a>
+        <br><br>
+        Complete the Form Below: (<font color="red">*</font> indicates required field)
+        <br>
+    </h2>
+    <div>
+    <div>
+      <form action="contactus">
+          <label for="fname"><font color="red">*</font> First Name</label>
+          <input id="fname" name="firstname" placeholder="Your name.." type="text">
+              
+          <label for="lname"><font color="red">*</font> Last Name</label>
+          <input id="lname" name="lastname" placeholder="Your last name.." type="text">
+              
+          <label for="referral"><font color="red">*</font> Referral Source</label>
+          <input id="referral" name="referral" placeholder="Referred By.." type="text">
+              
+          <label for="email"><font color="red">*</font> Email Address</label>
+          <input id="email" name="email" placeholder="Your email address.." type="text">
+                  
+          <label for="addr1">Mailing Address</label>
+          <input id="addr1" name="addr1" placeholder="Address Line 1.." type="text">
+              
+          
+          <input id="addr2" name="addr2" placeholder="Address Line 2.." type="text">
+
+          <label for="phone">Daytime Phone Number</label>
+          <input id="phone" name="phone" placeholder="Your Phone Number.." type="text">
+          
+          <label for="notify">Remind Me of Appointment</label>
+          <input type="checkbox" id="notify" name="notify" />
+          <br>
+
+          <textarea id="comment" placeholder="Comment or Question.." name="comment" rows="4" cols="50"></textarea>
+            
+   <br>
+        </form>
+    </div><br>
+    <center><a href="contactform"><img src="sendmessage.png"></a></center>
+    <br><br>
+  </body>
+</html>
